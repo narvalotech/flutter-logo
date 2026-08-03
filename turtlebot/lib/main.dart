@@ -16,6 +16,18 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class TurnScreen extends StatelessWidget {
+  const TurnScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Turn arouuuund')),
+      body: const Center(
+        child: Text('Nothing to see here'),
+      ));
+}}
+
 class PageButton extends StatelessWidget {
   final String pageId;
   final IconData pageIcon;
@@ -34,6 +46,11 @@ class PageButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           print('pressed: $pageId');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const TurnScreen(),
+          ));
         },
         style: ElevatedButton.styleFrom(
           // TODO: make buttons stand out more
