@@ -34,26 +34,27 @@ class PageButton extends StatelessWidget {
         print('pressed: $pageId');
       },
       style: ElevatedButton.styleFrom(
+        // TODO: make buttons stand out more
+        // y google hate contrast?
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(4.0),
         ),
+        padding: const EdgeInsets.symmetric(
+          vertical: 12,
+          horizontal: 12,
+        )
       ),
       child: Row(
         children: [
           Icon(pageIcon,
-          size: 32.0),
+            size: 32.0),
           const SizedBox(width: 12.0),
           Expanded(
             child: Text(
               pageId,
               style: TextStyle(fontSize: 30),
-            )
-          ),
-        ],
-      ),
-    );
-  }
-}
+    ))]));
+}}
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -71,7 +72,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             // Commands view
             Expanded(
-              flex: 2,
+              flex: 4,
               child: Container(
                 padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
@@ -81,71 +82,47 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: const Text(
                   'Command list',
-                  style: TextStyle(fontSize: 16.0),
-                ),
-              ),
-            ),
+                  style: TextStyle(fontSize: 24.0),
+            ))),
+
+            SizedBox(height: 12),
 
             // Page & Action Buttons
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
                       PageButton(pageId: 'Pen Up / Down', pageIcon: Icons.create),
                       SizedBox(height: 12),
                       PageButton(pageId: 'Forward', pageIcon: Icons.arrow_upward),
                       SizedBox(height: 12),
                       PageButton(pageId: 'Turn', pageIcon: Icons.u_turn_right),
-                  ]),
+            ])),
 
-                  // Action buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton.filledTonal(
-                        onPressed: () {},
-                        icon: const Icon(Icons.delete),
-                        tooltip: 'Erase Last',
-                      ),
-                      IconButton.filled(
-                        onPressed: () {},
-                        icon: const Icon(Icons.stop),
-                        style: IconButton.styleFrom(backgroundColor: Colors.red),
-                        tooltip: 'Stop',
-                      ),
-                      IconButton.filled(
-                        onPressed: () {},
-                        icon: const Icon(Icons.play_arrow),
-                        style: IconButton.styleFrom(backgroundColor: Colors.green),
-                        tooltip: 'Run',
-                      ),
-                    ],
+            // Action buttons
+            Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton.filledTonal(
+                    onPressed: () {},
+                    icon: const Icon(Icons.delete, size: 50.0),
+                    tooltip: 'Erase Last',
                   ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+                  IconButton.filled(
+                    onPressed: () {},
+                    icon: const Icon(Icons.stop, size: 50.0),
+                    style: IconButton.styleFrom(backgroundColor: Colors.red),
+                    tooltip: 'Stop',
+                  ),
+                  IconButton.filled(
+                    onPressed: () {},
+                    icon: const Icon(Icons.play_arrow, size: 50.0),
+                    style: IconButton.styleFrom(backgroundColor: Colors.green),
+                    tooltip: 'Run',
+            )]))
+    ])));
   }
 }
-
-// Main app widget layout:
-// - x split (column)
-//   - text view
-//   - button area
-//     - column
-//       - "pen up/down"
-//       - "forward"
-//       - "turn"
-//       - y split (row)
-//       (icon row)
-//         - erase last
-//         - stop
-//         - play
