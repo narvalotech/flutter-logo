@@ -29,31 +29,33 @@ class PageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        print('pressed: $pageId');
-      },
-      style: ElevatedButton.styleFrom(
-        // TODO: make buttons stand out more
-        // y google hate contrast?
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: ElevatedButton(
+        onPressed: () {
+          print('pressed: $pageId');
+        },
+        style: ElevatedButton.styleFrom(
+          // TODO: make buttons stand out more
+          // y google hate contrast?
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          padding: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 12,
+          )
         ),
-        padding: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 12,
-        )
-      ),
-      child: Row(
-        children: [
-          Icon(pageIcon,
-            size: 32.0),
-          const SizedBox(width: 12.0),
-          Expanded(
-            child: Text(
-              pageId,
-              style: TextStyle(fontSize: 30),
-    ))]));
+        child: Row(
+          children: [
+            Icon(pageIcon,
+              size: 32.0),
+            const SizedBox(width: 12.0),
+            Expanded(
+              child: Text(
+                pageId,
+                style: TextStyle(fontSize: 30),
+    ))])));
 }}
 
 class HomeScreen extends StatelessWidget {
@@ -89,20 +91,18 @@ class HomeScreen extends StatelessWidget {
 
             // Page & Action Buttons
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                       PageButton(pageId: 'Pen Up / Down', pageIcon: Icons.create),
-                      SizedBox(height: 12),
                       PageButton(pageId: 'Forward', pageIcon: Icons.arrow_upward),
-                      SizedBox(height: 12),
                       PageButton(pageId: 'Turn', pageIcon: Icons.u_turn_right),
             ])),
 
             // Action buttons
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
