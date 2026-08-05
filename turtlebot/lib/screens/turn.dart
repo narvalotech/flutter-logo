@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import 'knob.dart';
+import '../widgets/knob.dart';
 
 class TurnScreen extends StatefulWidget {
   const TurnScreen({Key? key}) : super(key: key);
@@ -9,9 +9,32 @@ class TurnScreen extends StatefulWidget {
   State<TurnScreen> createState() => _TurnState();
 }
 
+enum Direction {
+  left, right;
+
+  @override
+  String toString() {
+    return name[0].toUpperCase() + name.substring(1);
+  }
+}
 
 class _TurnState extends State<TurnScreen> {
   double _currentValue = 0.0;
+
+  String makeTextStr() {
+    double directionalAngle = 0.0;
+    Direction dir;
+
+    if (_currentValue > 180) {
+      directionalAngle = -1 * (180 - _currentValue);
+      dir = Direction.left;
+    } else {
+      directionalAngle = _currentValue;
+      dir = Direction.right;
+    }
+
+    return 'Turn ${directionalAngle.toStringAsFixed(0)} degrees ${dir}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +45,7 @@ class _TurnState extends State<TurnScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Stuff: ${_currentValue.toStringAsFixed(0)}',
+              makeTextStr(),
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 40),
             SizedBox(
@@ -31,7 +54,22 @@ class _TurnState extends State<TurnScreen> {
               child: Knob(
                 onChanged: (angle) {
                   setState(() => {_currentValue = angle * 180 / pi});
-                }
-    ))])));
+                })),
+            const SizedBox(height: 40),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton.filledTonal(
+                    onPressed: () {},
+                    icon: const Icon(Icons.clear, size: 50.0),
+                    tooltip: 'Back',
+                  ),
+                  IconButton.filledTonal(
+                    onPressed: () {},
+                    icon: const Icon(Icons.check, size: 50.0),
+                    tooltip: 'OK',
+                  ),
+              ])
+          ])));
 }}
 
