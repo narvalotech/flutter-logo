@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/turn.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,18 +16,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-class TurnScreen extends StatelessWidget {
-  const TurnScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Turn arouuuund')),
-      body: const Center(
-        child: Text('Nothing to see here'),
-      ));
-}}
 
 class PageButton extends StatelessWidget {
   final String pageId;
