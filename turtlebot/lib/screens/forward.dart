@@ -1,45 +1,27 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import '../widgets/knob.dart';
 
-class TurnScreen extends StatefulWidget {
-  const TurnScreen({Key? key}) : super(key: key);
-
-  @override
-  State<TurnScreen> createState() => _TurnState();
-}
-
-enum Direction {
-  left, right;
+class ForwardScreen extends StatefulWidget {
+  const ForwardScreen({Key? key}) : super(key: key);
 
   @override
-  String toString() {
-    return name[0].toUpperCase() + name.substring(1);
-  }
+  State<ForwardScreen> createState() => _ForwardState();
 }
 
-class _TurnState extends State<TurnScreen> {
+class _ForwardState extends State<ForwardScreen> {
   double _currentValue = 0.0;
+  final sliderMax = 100.0;
+  final sliderDiv = 5.0;
+
 
   String makeTextStr() {
-    double directionalAngle = 0.0;
-    Direction dir;
-
-    if (_currentValue > 180) {
-      directionalAngle = (360 - _currentValue);
-      dir = Direction.left;
-    } else {
-      directionalAngle = _currentValue;
-      dir = Direction.right;
-    }
-
-    return 'Turn ${directionalAngle.toStringAsFixed(0)} degrees ${dir}';
+    return 'Forward ${_currentValue.toStringAsFixed(0)}';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Turn arouuuund')),
+      appBar: AppBar(title: const Text('Forward arouuuund')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -48,13 +30,22 @@ class _TurnState extends State<TurnScreen> {
               makeTextStr(),
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 40),
-            SizedBox(
-              width: 250,
-              height: 250,
-              child: Knob(
-                onChanged: (angle) {
-                  setState(() => {_currentValue = angle * 180 / pi});
-                })),
+            RotatedBox(
+              quarterTurns: 3,
+              child:
+              SizedBox(
+                width: 250,
+                height: 250,
+                child: Slider(
+                  value: _currentValue,
+                  max: sliderMax,
+                  divisions: (sliderMax / sliderDiv).round(),
+                  label: _currentValue.round().toString(),
+                  onChanged: (double value) {
+                    setState(() {
+                        _currentValue = value;
+                    });
+            }))),
             const SizedBox(height: 40),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

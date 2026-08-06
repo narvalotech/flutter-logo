@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/turn.dart';
+import 'screens/forward.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,6 +31,17 @@ class PageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget destination = const TurnScreen();
+
+    // FIXME this is ugly
+    if (pageId == 'Pen Up / Down') {
+      destination = const TurnScreen();
+    } else if (pageId == 'Forward') {
+      destination = const ForwardScreen();
+    } else if (pageId == 'Turn') {
+      destination = const TurnScreen();
+    }
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: ElevatedButton(
@@ -38,7 +50,7 @@ class PageButton extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const TurnScreen(),
+              builder: (context) => destination,
           ));
         },
         style: ElevatedButton.styleFrom(
