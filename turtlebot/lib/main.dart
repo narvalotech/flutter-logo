@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/turn.dart';
 import 'screens/forward.dart';
+import 'screens/back.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,13 +32,13 @@ class PageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget destination = const TurnScreen();
+    Widget? destination = null;
 
     // FIXME this is ugly
-    if (pageId == 'Pen Up / Down') {
-      destination = const TurnScreen();
-    } else if (pageId == 'Forward') {
+    if (pageId == 'Forward') {
       destination = const ForwardScreen();
+    } else if (pageId == 'Back') {
+      destination = const BackScreen();
     } else if (pageId == 'Turn') {
       destination = const TurnScreen();
     }
@@ -47,11 +48,13 @@ class PageButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           print('pressed: $pageId');
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => destination,
-          ));
+          if (destination != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => destination as Widget,
+            ));
+          }
         },
         style: ElevatedButton.styleFrom(
           // TODO: make buttons stand out more
@@ -72,7 +75,7 @@ class PageButton extends StatelessWidget {
             Expanded(
               child: Text(
                 pageId,
-                style: TextStyle(fontSize: 30),
+                style: TextStyle(fontSize: 28),
     ))])));
 }}
 
@@ -113,8 +116,16 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                      PageButton(pageId: 'Pen Up / Down', pageIcon: Icons.create),
-                      PageButton(pageId: 'Forward', pageIcon: Icons.arrow_upward),
+                      Row(
+                        children: [
+                          Expanded(child: PageButton(pageId: 'Pen Up', pageIcon: Icons.draw)),
+                          Expanded(child: PageButton(pageId: 'Down', pageIcon: Icons.edit_off)),
+                          ]),
+                      Row(
+                        children: [
+                          Expanded(child: PageButton(pageId: 'Forward', pageIcon: Icons.arrow_upward)),
+                          Expanded(child: PageButton(pageId: 'Back', pageIcon: Icons.arrow_downward)),
+                        ]),
                       PageButton(pageId: 'Turn', pageIcon: Icons.u_turn_right),
             ])),
 

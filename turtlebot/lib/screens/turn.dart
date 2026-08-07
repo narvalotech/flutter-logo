@@ -39,7 +39,7 @@ class _TurnState extends State<TurnScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Turn arouuuund')),
+      appBar: AppBar(title: const Text('Turn left or right')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

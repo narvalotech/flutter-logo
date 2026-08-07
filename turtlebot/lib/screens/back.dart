@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-class ForwardScreen extends StatefulWidget {
-  const ForwardScreen({Key? key}) : super(key: key);
+class BackScreen extends StatefulWidget {
+  const BackScreen({Key? key}) : super(key: key);
 
   @override
-  State<ForwardScreen> createState() => _ForwardState();
+  State<BackScreen> createState() => _BackState();
 }
 
-class _ForwardState extends State<ForwardScreen> {
+class _BackState extends State<BackScreen> {
   double _currentValue = 0.0;
   final sliderMax = 100.0;
   final sliderDiv = 5.0;
 
 
   String makeTextStr() {
-    return 'Forward ${_currentValue.toStringAsFixed(0)}';
+    return 'Back ${_currentValue.toStringAsFixed(0)}';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Move forward')),
+      appBar: AppBar(title: const Text('Move back')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -31,7 +31,7 @@ class _ForwardState extends State<ForwardScreen> {
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 40),
             RotatedBox(
-              quarterTurns: 3,
+              quarterTurns: 1,
               child:
               SizedBox(
                 width: 250,
