@@ -46,14 +46,18 @@ class PageButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: ElevatedButton(
-        onPressed: () {
-          print('pressed: $pageId');
+        onPressed: () async {
           if (destination != null) {
-            Navigator.push(
+            final result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => destination as Widget,
             ));
+
+            if (result != null) {
+              // TODO: add to command stack
+              print('Got result: ${result}');
+            }
           }
         },
         style: ElevatedButton.styleFrom(

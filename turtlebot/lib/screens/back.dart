@@ -51,12 +51,16 @@ class _BackState extends State<BackScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton.filledTonal(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     icon: const Icon(Icons.clear, size: 50.0),
                     tooltip: 'Back',
                   ),
                   IconButton.filledTonal(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context, _currentValue);
+                    },
                     icon: const Icon(Icons.check, size: 50.0),
                     tooltip: 'OK',
                   ),
