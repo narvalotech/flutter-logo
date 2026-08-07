@@ -19,8 +19,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
+enum Turtle {
+  forward, back, left, right, penup, pendown
+}
+
 class PageButton extends StatelessWidget {
-  final String pageId;
+  final Turtle pageId;
   final IconData pageIcon;
 
   const PageButton({
@@ -30,18 +34,41 @@ class PageButton extends StatelessWidget {
       required this.pageIcon,
   });
 
+  String makeButtonTitle(Turtle cmd) {
+    switch (cmd) {
+      case .forward:
+      return 'Forward';
+      case .back:
+      return 'Back';
+      case .right:
+      case .left:
+      return 'Turn';
+      case .pendown:
+      return 'Pen down';
+      case .penup:
+      return 'Pen up';
+    }
+  }
+
+  Widget? getPage(Turtle cmd) {
+    switch (cmd) {
+      case .forward:
+      return const ForwardScreen();
+      case .back:
+      return const BackScreen();
+      case .right:
+      case .left:
+      return const TurnScreen();
+      case .pendown:
+      return null;
+      case .penup:
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget? destination = null;
-
-    // FIXME this is ugly
-    if (pageId == 'Forward') {
-      destination = const ForwardScreen();
-    } else if (pageId == 'Back') {
-      destination = const BackScreen();
-    } else if (pageId == 'Turn') {
-      destination = const TurnScreen();
-    }
+    Widget? destination = getPage(pageId);
 
     return Padding(
       padding: const EdgeInsets.all(8),
@@ -56,7 +83,12 @@ class PageButton extends StatelessWidget {
 
             if (result != null) {
               // TODO: add to command stack
-              print('Got result: ${result}');
+              print('Command: ${makeButtonTitle(pageId)} ${result}');
+            }
+
+          } else {
+            if (pageId == .penup || pageId == .pendown) {
+              print('Command: ${makeButtonTitle(pageId)}');
             }
           }
         },
@@ -78,8 +110,8 @@ class PageButton extends StatelessWidget {
             const SizedBox(width: 12.0),
             Expanded(
               child: Text(
-                pageId,
-                style: TextStyle(fontSize: 28),
+                makeButtonTitle(pageId),
+                style: TextStyle(fontSize: 22),
     ))])));
 }}
 
@@ -99,7 +131,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             // Commands view
             Expanded(
-              flex: 4,
+              flex: 6,
               child: Container(
                 padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
@@ -122,15 +154,15 @@ class HomeScreen extends StatelessWidget {
                 children: [
                       Row(
                         children: [
-                          Expanded(child: PageButton(pageId: 'Pen Up', pageIcon: Icons.draw)),
-                          Expanded(child: PageButton(pageId: 'Down', pageIcon: Icons.edit_off)),
+                          Expanded(child: PageButton(pageId: Turtle.pendown, pageIcon: Icons.draw)),
+                          Expanded(child: PageButton(pageId: Turtle.penup, pageIcon: Icons.edit_off)),
                           ]),
                       Row(
                         children: [
-                          Expanded(child: PageButton(pageId: 'Forward', pageIcon: Icons.arrow_upward)),
-                          Expanded(child: PageButton(pageId: 'Back', pageIcon: Icons.arrow_downward)),
+                          Expanded(child: PageButton(pageId: Turtle.forward, pageIcon: Icons.arrow_upward)),
+                          Expanded(child: PageButton(pageId: Turtle.back, pageIcon: Icons.arrow_downward)),
                         ]),
-                      PageButton(pageId: 'Turn', pageIcon: Icons.u_turn_right),
+                      PageButton(pageId: Turtle.right, pageIcon: Icons.u_turn_right),
             ])),
 
             // Action buttons
