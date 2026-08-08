@@ -23,6 +23,28 @@ enum Turtle {
   forward, back, left, right, penup, pendown
 }
 
+class TurtleCommand {
+  Turtle command;
+  double? magnitude;
+
+  TurtleCommand(this.command, [this.magnitude]);
+
+  @override
+  String toString() {
+    String name = command.name.toUpperCase();
+    if (magnitude != null) {
+      return '${name} ${magnitude}';
+    }
+    return name;
+  }
+}
+
+class CommandNotification extends Notification {
+  final TurtleCommand command;
+
+  CommandNotification(this.command);
+}
+
 class PageButton extends StatelessWidget {
   final Turtle pageId;
   final IconData pageIcon;
@@ -81,14 +103,20 @@ class PageButton extends StatelessWidget {
                 builder: (context) => destination as Widget,
             ));
 
-            if (result != null) {
-              // TODO: add to command stack
+            if (result != null && result is double) {
               print('Command: ${makeButtonTitle(pageId)} ${result}');
+              if (pageId == .right && result > 180) {
+                // pas tres catholique tout ca
+                CommandNotification(TurtleCommand(Turtle.left, 360 - result)).dispatch(context);
+              } else {
+                CommandNotification(TurtleCommand(pageId, result)).dispatch(context);
+              }
             }
 
           } else {
             if (pageId == .penup || pageId == .pendown) {
               print('Command: ${makeButtonTitle(pageId)}');
+              CommandNotification(TurtleCommand(pageId)).dispatch(context);
             }
           }
         },
@@ -117,6 +145,11 @@ class PageButton extends StatelessWidget {
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  _addCommand(TurtleCommand command) {
+    // TODO: add to command stack
+    print('Adding: ${command}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,23 +180,29 @@ class HomeScreen extends StatelessWidget {
             SizedBox(height: 12),
 
             // Page & Action Buttons
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                      Row(
-                        children: [
-                          Expanded(child: PageButton(pageId: Turtle.pendown, pageIcon: Icons.draw)),
-                          Expanded(child: PageButton(pageId: Turtle.penup, pageIcon: Icons.edit_off)),
-                          ]),
-                      Row(
-                        children: [
-                          Expanded(child: PageButton(pageId: Turtle.forward, pageIcon: Icons.arrow_upward)),
-                          Expanded(child: PageButton(pageId: Turtle.back, pageIcon: Icons.arrow_downward)),
-                        ]),
-                      PageButton(pageId: Turtle.right, pageIcon: Icons.u_turn_right),
-            ])),
+            NotificationListener<CommandNotification>(
+              onNotification: (notification) {
+                _addCommand(notification.command);
+                return true;    // Consume notification
+              },
+              child: 
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: PageButton(pageId: Turtle.pendown, pageIcon: Icons.draw)),
+                        Expanded(child: PageButton(pageId: Turtle.penup, pageIcon: Icons.edit_off)),
+                    ]),
+                    Row(
+                      children: [
+                        Expanded(child: PageButton(pageId: Turtle.forward, pageIcon: Icons.arrow_upward)),
+                        Expanded(child: PageButton(pageId: Turtle.back, pageIcon: Icons.arrow_downward)),
+                    ]),
+                    PageButton(pageId: Turtle.right, pageIcon: Icons.u_turn_right),
+            ]))),
 
             // Action buttons
             Expanded(
