@@ -152,11 +152,30 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var commands = <TurtleCommand>[];
+  final ScrollController _scrollController = ScrollController();
+  bool _needsScroll = false;
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   void _addCommand(TurtleCommand command) {
     print('Adding: ${command}');
     setState(() {
         commands.add(command);
+        _needsScroll = true;
     });
     print('Current list: ${commands}');
   }
@@ -164,11 +183,18 @@ class _HomeScreenState extends State<HomeScreen> {
   void _popCommand() {
     setState(() {
         commands.removeLast();
+        _needsScroll = true;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_needsScroll) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _scrollToBottom());
+      _needsScroll = false;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Turtlebot'),
@@ -190,6 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child:
                 ListView.builder(
+                  controller: _scrollController,
                   itemCount: commands.length,
                   itemBuilder: (context, index) {
                     final cmd = commands[index];
