@@ -143,12 +143,24 @@ class PageButton extends StatelessWidget {
     ))])));
 }}
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  _addCommand(TurtleCommand command) {
-    // TODO: add to command stack
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  var commands = <TurtleCommand>[];
+
+  void _addCommand(TurtleCommand command) {
     print('Adding: ${command}');
+    commands.add(command);
+    print('Current list: ${commands}');
+  }
+
+  void _popCommand() {
+    commands.removeLast();
   }
 
   @override
@@ -211,7 +223,7 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton.filledTonal(
-                    onPressed: () {},
+                    onPressed: _popCommand,
                     icon: const Icon(Icons.delete, size: 50.0),
                     tooltip: 'Erase Last',
                   ),
