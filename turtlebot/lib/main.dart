@@ -25,7 +25,7 @@ enum Turtle {
 
 class TurtleCommand {
   Turtle command;
-  double? magnitude;
+  num? magnitude;
 
   TurtleCommand(this.command, [this.magnitude]);
 
@@ -33,7 +33,8 @@ class TurtleCommand {
   String toString() {
     String name = command.name.toUpperCase();
     if (magnitude != null) {
-      return '${name} ${magnitude}';
+      final int m = magnitude!.round().toInt();
+      return '${name} ${m}';
     }
     return name;
   }
@@ -103,7 +104,7 @@ class PageButton extends StatelessWidget {
                 builder: (context) => destination as Widget,
             ));
 
-            if (result != null && result is double) {
+            if (result != null && result is num) {
               print('Command: ${makeButtonTitle(pageId)} ${result}');
               if (pageId == .right && result > 180) {
                 // pas tres catholique tout ca
