@@ -200,14 +200,14 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Turtlebot'),
       ),
-      body: Padding(
+      body: SafeArea(
+        child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Commands view
             Expanded(
-              flex: 6,
               child: Container(
                 padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
@@ -234,10 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _addCommand(notification.command);
                 return true;    // Consume notification
               },
-              child: 
-              Expanded(
-                flex: 3,
-                child: Column(
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
@@ -251,12 +248,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(child: PageButton(pageId: Turtle.back, pageIcon: Icons.arrow_downward)),
                     ]),
                     PageButton(pageId: Turtle.right, pageIcon: Icons.u_turn_right),
-            ]))),
+            ])),
+
+            SizedBox(height: 20),
 
             // Action buttons
-            Expanded(
-              flex: 2,
-              child: Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton.filledTonal(
@@ -275,7 +272,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: const Icon(Icons.play_arrow, size: 50.0),
                     style: IconButton.styleFrom(backgroundColor: Colors.green),
                     tooltip: 'Run',
-            )]))
-    ])));
+            )]),
+
+            SizedBox(height: 20),
+    ]))));
   }
 }
