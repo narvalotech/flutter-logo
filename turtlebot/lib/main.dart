@@ -155,12 +155,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _addCommand(TurtleCommand command) {
     print('Adding: ${command}');
-    commands.add(command);
+    setState(() {
+        commands.add(command);
+    });
     print('Current list: ${commands}');
   }
 
   void _popCommand() {
-    commands.removeLast();
+    setState(() {
+        commands.removeLast();
+    });
   }
 
   @override
@@ -184,10 +188,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(8.0),
                   border: Border.all(color: Colors.grey.shade400),
                 ),
-                child: const Text(
-                  'Command list',
-                  style: TextStyle(fontSize: 24.0),
-            ))),
+                child:
+                ListView.builder(
+                  itemCount: commands.length,
+                  itemBuilder: (context, index) {
+                    final cmd = commands[index];
+                    return Text(
+                        cmd.toString(),
+                        style: TextStyle(fontSize: 20.0));
+                    }))),
 
             SizedBox(height: 12),
 
