@@ -3,6 +3,7 @@ import 'screens/turn.dart';
 import 'screens/forward.dart';
 import 'screens/back.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -173,7 +174,17 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  final flutterReactiveBle = FlutterReactiveBle();
+  StreamSubscription<DiscoveredDevice>? _scanSubscription;
+
   void _addCommand(TurtleCommand command) {
+    _scanSubscription = flutterReactiveBle.scanForDevices(
+      withServices: [], scanMode: ScanMode.lowLatency).listen((device) {
+        print('Found device: ${device}');
+      }, onError: (e) {
+        print('Error: ${e}');
+    });
+
     print('Adding: ${command}');
     setState(() {
         commands.add(command);
@@ -183,6 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _popCommand() {
+    _scanSubscription?.cancel();
+    _scanSubscription = null;
     setState(() {
         commands.removeLast();
         _needsScroll = true;
