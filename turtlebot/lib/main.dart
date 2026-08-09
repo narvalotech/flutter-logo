@@ -178,12 +178,16 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription<DiscoveredDevice>? _scanSubscription;
 
   void _addCommand(TurtleCommand command) {
-    _scanSubscription = flutterReactiveBle.scanForDevices(
-      withServices: [], scanMode: ScanMode.lowLatency).listen((device) {
-        print('Found device: ${device}');
-      }, onError: (e) {
-        print('Error: ${e}');
-    });
+    if (_scanSubscription == null) {
+      _scanSubscription = flutterReactiveBle.scanForDevices(
+        withServices: [], scanMode: ScanMode.lowLatency).listen((device) {
+          if (device.name.contains('turtle')) {
+            print('Found device: ${device}');
+          }
+        }, onError: (e) {
+          print('Error: ${e}');
+      });
+    }
 
     print('Adding: ${command}');
     setState(() {
