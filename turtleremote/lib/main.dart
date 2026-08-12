@@ -24,18 +24,40 @@ class _MainState extends State<MainApp> {
   double _servoVal = 0.0;
   double _speedVal = 50.0;
 
-  Widget makeButton(icon, cb) {
+  void _pressed(direction) {
+    print('pressed: ${direction}');
+  }
+
+  void _released(direction) {
+    print('released: ${direction}');
+  }
+
+  Widget makeButton(icon, text, color) {
     return SizedBox(
       height: 70,
       width: 70,
-      child: IconButton.filledTonal(
-        onPressed: cb,
-        icon: Icon(icon, size: 50.0),
-    ));
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (_) {_pressed(text);},
+        onTapUp: (_) {_released(text);},
+        onTapCancel: () {_released(text);},
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            icon,
+            color: Colors.white,
+            size: 40,
+    ))));
   }
   
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final bc = colorScheme.primary;
+
     const _servoMax = 152.0;
     const _speedMax = 100.0;
 
@@ -96,15 +118,15 @@ class _MainState extends State<MainApp> {
                 child: Row(
                   mainAxisAlignment: .spaceEvenly,
                   children: [
-                    makeButton(Icons.arrow_circle_left, () {print('left');}),
+                    makeButton(Icons.arrow_circle_left, 'left', bc),
                     Column(
                       mainAxisAlignment: .spaceEvenly,
                       children: [
-                        makeButton(Icons.arrow_circle_up, () {print('up');}),
+                        makeButton(Icons.arrow_circle_up, 'up', bc),
                         SizedBox(height: 70),
-                        makeButton(Icons.arrow_circle_down, () {print('down');}),
+                        makeButton(Icons.arrow_circle_down, 'down', bc),
                     ]),
-                    makeButton(Icons.arrow_circle_right, () {print('right');}),
+                    makeButton(Icons.arrow_circle_right, 'right', bc),
               ])),
               SizedBox(width: 40),
     ]))));
