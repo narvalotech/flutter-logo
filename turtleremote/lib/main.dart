@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:typed_data';
+import 'ble.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,16 +60,21 @@ class _MainState extends State<MainApp> {
   double _servoVal = 0.0;
   double _speedVal = 50.0;
 
+  final ble = SimpleBle();
+
   var currentCommand = RemoteCommand.Unknown;
   Timer? commandTimer;
 
   void sendCommand(cmd) {
-    print('send: ${cmd} => ${cmd.serialize()}');
+    // print('send: ${cmd} => ${cmd.serialize()}');
+    ble.connect();
+    ble.send(cmd.serialize());
   }
 
   void sendPeriodicCommand(timer) {
     if (currentCommand == .Unknown) {
-      timer.cancel();
+      final cmd = RemoteProtocol(RemoteCommand.Forward, 0);
+      sendCommand(cmd);
       return;
     }
 
@@ -79,12 +85,15 @@ class _MainState extends State<MainApp> {
   void _pressed(direction) {
     currentCommand = direction;
     commandTimer = Timer.periodic(const Duration(milliseconds: 100), sendPeriodicCommand);
-    print('pressed: ${direction}');
+    // print('pressed: ${direction}');
   }
 
   void _released(direction) {
     currentCommand = RemoteCommand.Unknown;
-    print('rel: ${direction}');
+    commandTimer?.cancel();
+    final cmd = RemoteProtocol(RemoteCommand.Forward, 0);
+    sendCommand(cmd);
+    // print('rel: ${direction}');
   }
 
   Widget makeButton(icon, direction, color) {
