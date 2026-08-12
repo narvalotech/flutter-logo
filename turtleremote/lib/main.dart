@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:async';
+import 'dart:typed_data';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,27 +22,80 @@ class MainApp extends StatefulWidget {
   State<MainApp> createState() => _MainState();
 }
 
+enum RemoteCommand {
+  Unknown(0), Forward(1), Back(2), Left(3), Right(4), Servo1(5), Servo2(6);
+
+  final int value;
+
+  const RemoteCommand(this.value);
+}
+
+class RemoteProtocol {
+  RemoteCommand command;        // u8
+  num magnitude;               // u16
+
+  RemoteProtocol(this.command, this.magnitude);
+
+  Uint8List serialize() {
+    var buf = ByteData(3);
+    buf.setInt8(0, command.value);
+    buf.setInt16(1, magnitude.round() as int, Endian.little);
+
+    return buf.buffer.asUint8List();
+  }
+
+  @override
+  String toString() {
+    String name = command.name.toUpperCase();
+    if (magnitude != null) {
+      final int m = magnitude!.round().toInt();
+      return '${name} ${m}';
+    }
+    return name;
+  }
+}
+
 class _MainState extends State<MainApp> {
   double _servoVal = 0.0;
   double _speedVal = 50.0;
 
+  var currentCommand = RemoteCommand.Unknown;
+  Timer? commandTimer;
+
+  void sendCommand(cmd) {
+    print('send: ${cmd} => ${cmd.serialize()}');
+  }
+
+  void sendPeriodicCommand(timer) {
+    if (currentCommand == .Unknown) {
+      timer.cancel();
+      return;
+    }
+
+    final cmd = RemoteProtocol(currentCommand, _speedVal);
+    sendCommand(cmd);
+  }
+
   void _pressed(direction) {
+    currentCommand = direction;
+    commandTimer = Timer.periodic(const Duration(milliseconds: 100), sendPeriodicCommand);
     print('pressed: ${direction}');
   }
 
   void _released(direction) {
-    print('released: ${direction}');
+    currentCommand = RemoteCommand.Unknown;
+    print('rel: ${direction}');
   }
 
-  Widget makeButton(icon, text, color) {
+  Widget makeButton(icon, direction, color) {
     return SizedBox(
       height: 70,
       width: 70,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTapDown: (_) {_pressed(text);},
-        onTapUp: (_) {_released(text);},
-        onTapCancel: () {_released(text);},
+        onTapDown: (_) {_pressed(direction);},
+        onTapUp: (_) {_released(direction);},
+        onTapCancel: () {_released(direction);},
         child: Container(
           decoration: BoxDecoration(
             color: color,
@@ -74,7 +129,7 @@ class _MainState extends State<MainApp> {
               Column(
                 children: [
                   SizedBox(height: 20),
-                  SizedBox(width: 100,
+                  SizedBox(width: 120,
                     child: Text('Servo: ${_servoVal.round()}',
                       style: const TextStyle(fontSize: 20))),
                   Expanded(child: RotatedBox(
@@ -86,13 +141,14 @@ class _MainState extends State<MainApp> {
                         onChanged: (double value) {
                           setState(() {
                               _servoVal = value;
+                              sendCommand(RemoteProtocol(RemoteCommand.Servo1, value.round()));
                           });
               })))]),
 
               Column(
                 children: [
                   SizedBox(height: 20),
-                  SizedBox(width: 100,
+                  SizedBox(width: 120,
                   child: Text('Speed: ${_speedVal.round()}',
                     style: const TextStyle(fontSize: 20))),
                   Expanded(child: RotatedBox(
@@ -118,15 +174,15 @@ class _MainState extends State<MainApp> {
                 child: Row(
                   mainAxisAlignment: .spaceEvenly,
                   children: [
-                    makeButton(Icons.arrow_circle_left, 'left', bc),
+                    makeButton(Icons.arrow_circle_left, RemoteCommand.Left, bc),
                     Column(
                       mainAxisAlignment: .spaceEvenly,
                       children: [
-                        makeButton(Icons.arrow_circle_up, 'up', bc),
+                        makeButton(Icons.arrow_circle_up, RemoteCommand.Forward, bc),
                         SizedBox(height: 70),
-                        makeButton(Icons.arrow_circle_down, 'down', bc),
+                        makeButton(Icons.arrow_circle_down, RemoteCommand.Back, bc),
                     ]),
-                    makeButton(Icons.arrow_circle_right, 'right', bc),
+                    makeButton(Icons.arrow_circle_right, RemoteCommand.Right, bc),
               ])),
               SizedBox(width: 40),
     ]))));
