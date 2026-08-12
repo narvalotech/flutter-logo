@@ -23,6 +23,16 @@ class MainApp extends StatefulWidget {
 class _MainState extends State<MainApp> {
   double _servoVal = 0.0;
   double _speedVal = 50.0;
+
+  Widget makeButton(icon, cb) {
+    return SizedBox(
+      height: 70,
+      width: 70,
+      child: IconButton.filledTonal(
+        onPressed: cb,
+        icon: Icon(icon, size: 50.0),
+    ));
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -79,39 +89,22 @@ class _MainState extends State<MainApp> {
               // Text('🐢🎮', style: const TextStyle(fontSize: 40)),
               SizedBox(width: 40),
 
-              // Now draw the direction buttons
+              // Now draw the D-pad
               SizedBox(
-                width: 200,
-                height: 200,
+                width: 240,
+                height: 240,
                 child: Row(
+                  mainAxisAlignment: .spaceEvenly,
                   children: [
-                    IconButton.filledTonal(
-                      onPressed: () {
-                        print('pressed');
-                      },
-                      icon: const Icon(Icons.arrow_circle_left, size: 50.0),
-                      tooltip: 'left',),
-                    Column(children: [
-                        IconButton.filledTonal(
-                          onPressed: () {
-                            print('pressed');
-                          },
-                          icon: const Icon(Icons.arrow_circle_up, size: 50.0),
-                          tooltip: 'up',),
-                        SizedBox(height: 65),
-                        IconButton.filledTonal(
-                          onPressed: () {
-                            print('pressed');
-                          },
-                          icon: const Icon(Icons.arrow_circle_down, size: 50.0),
-                          tooltip: 'down',),
+                    makeButton(Icons.arrow_circle_left, () {print('left');}),
+                    Column(
+                      mainAxisAlignment: .spaceEvenly,
+                      children: [
+                        makeButton(Icons.arrow_circle_up, () {print('up');}),
+                        SizedBox(height: 70),
+                        makeButton(Icons.arrow_circle_down, () {print('down');}),
                     ]),
-                    IconButton.filledTonal(
-                      onPressed: () {
-                        print('pressed');
-                      },
-                      icon: const Icon(Icons.arrow_circle_right, size: 50.0),
-                      tooltip: 'right',),
+                    makeButton(Icons.arrow_circle_right, () {print('right');}),
               ])),
               SizedBox(width: 40),
     ]))));
