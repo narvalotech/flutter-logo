@@ -38,8 +38,8 @@ in
   android = {
     enable = true;
     flutter.enable = true;   # back to default nixpkgs flutter (3.44.x) — matches your pubspec
-    platforms.version = [ "36" "35" ];
-    buildTools.version = [ "36.0.0" "35.0.0" ];
+    platforms.version = [ "35" "33" ];
+    buildTools.version = [ "36.0.0" ];
     ndk.enable = true;
     googleAPIs.enable = true;
   };
